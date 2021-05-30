@@ -4,8 +4,9 @@ WORK IN PROGRESS
 
 Script to use in combination with [webooks](https://github.com/adnanh/webhook)
 
-
 ## webhook example
+
+Create a dedicated Gitlab user for apexec and set it as maintainer for all necessary repositories.
 
 ### hooks.yaml
 
@@ -17,7 +18,7 @@ Script to use in combination with [webooks](https://github.com/adnanh/webhook)
   include-command-output-in-response: false
   pass-arguments-to-command:
     - source: payload  # PLAYBOOK_URL
-      name: repository.git_http_url
+      name: repository.git_ssh_url
     - source: query  # PLAYBOOK_FILE
       name: playbook_file
     - source: query  # SSH_USER
