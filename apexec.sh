@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+[ ! -x "$(command -v pwgen)" ] && \
+  echo "pwgen not found!" && \
+  exit 1
+
 function init {
   [ ! -d /tmp/apexec ] && mkdir -p /tmp/apexec
   WORK_DIR="/tmp/apexec/$(pwgen 6 1)"
@@ -8,6 +12,18 @@ function init {
   SSH_USER=${3}
   SLACK_TOKEN=${4}
   SLACK_CHANNEL=${5}
+
+  [ -z "${PLAYBOOK_URL}" ] && \
+    echo "environment variable 'PLAYBOOK_URL' not set!" && \
+    exit 1
+
+  [ -z "${PLAYBOOK_FILE}" ] && \
+    echo "environment variable 'PLAYBOOK_FILE' not set!" && \
+    exit 1
+
+  [ -z "${SSH_USER}" ] && \
+    echo "environment variable 'SSH_USER' not set!" && \
+    exit 1
 }
 
 function pull_playbook {
@@ -24,6 +40,13 @@ function execute_ansible_playbook {
 }
 
 function send_notification {
+  [ -z "${SLACK_TOKEN}" ] && \
+    echo "environment variable 'SLACK_TOKEN' not set" && \
+    return
+  [ -z "${SLACK_CHANNEL}" ] && \
+    echo "environment variable 'SLACK_TOKEN' not set" && \
+    return
+
   summary=$(sed -n '/PLAY RECAP .*/ { :a; n; p; ba; }' log.txt | sed -r '/^\s*$/d')
   playbook_name=${PLAYBOOK_URL##*/}
   playbook_name=${playbook_name%.git}
@@ -41,4 +64,3 @@ install_requirements
 execute_ansible_playbook
 send_notification
 cleanup
-
