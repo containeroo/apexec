@@ -27,6 +27,8 @@ Create a dedicated Gitlab user for apexec and set it as maintainer for all neces
       name: <SLACK_WEBHOOK_URL>
     - source: query  # SLACK_CHANNEL (without hashtag!)
       name: slack_channel
+    - source: query  # path to Ansible vault password file (optional)
+      name: vault_password_file
   trigger-rule:
     and:
       - match:
@@ -47,6 +49,6 @@ Create a dedicated Gitlab user for apexec and set it as maintainer for all neces
 
 Settings => Webhooks ==> add URL
 
-```
-https://webhook.example.com/hooks/apexec?playbook_file=main.yml&ssh_user=ansible&slack_channel=ansible
+```text
+https://webhook.example.com/hooks/apexec?playbook_file=main.yml&ssh_user=ansible&slack_channel=ansible&vault_password_file=/opt/apexec/secret
 ```
