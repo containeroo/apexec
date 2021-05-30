@@ -1,10 +1,30 @@
 #!/usr/bin/env bash
 
-[ ! -x "$(command -v pwgen)" ] && \
-  echo "pwgen not found!" && \
-  exit 1
+#[ ! -x "$(command -v pwgen)" ] && \
+#  echo "pwgen not found!" && \
+#  exit 1
+
+function show_help {
+  echo "
+Usage: apexec.sh PLAYBOOK_URL
+                 PLAYBOOK_FILE
+                 SSH_USER
+                 SLACK_TOKEN
+                 SLACK_CHANNEL
+                 [-h|--help]
+
+Helper script for https://github.com/adnanh/webhook.
+
+All arguments are positional arguments!
+  "
+  exit 0
+}
 
 function init {
+  ((!$#)) && \
+    echo "No arguments supplied!" && \
+    exit 1
+
   [ ! -d /tmp/apexec ] && mkdir -p /tmp/apexec
   WORK_DIR="/tmp/apexec/$(pwgen 6 1)"
   PLAYBOOK_URL=${1}
@@ -57,6 +77,10 @@ function send_notification {
 function cleanup {
   rm -rf ${WORK_DIR}
 }
+
+
+[[ " $* " =~ " -h " ]] || [[ " $* " =~ " --help " ]] && \
+  show_help
 
 init ${1} ${2} ${3} ${4} ${5}
 pull_playbook
