@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-#[ ! -x "$(command -v pwgen)" ] && \
-#  echo "pwgen not found!" && \
-#  exit 1
+[ ! -x "$(command -v pwgen)" ] && \
+  echo "pwgen not found!" && \
+  exit 1
 
 function show_help {
   echo "
