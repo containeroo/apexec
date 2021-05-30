@@ -17,14 +17,9 @@ Helper script for https://github.com/adnanh/webhook.
 
 All arguments are positional arguments!
   "
-  exit 0
 }
 
 function init {
-  ((!$#)) && \
-    echo "No arguments supplied!" && \
-    exit 1
-
   [ ! -d /tmp/apexec ] && mkdir -p /tmp/apexec
   WORK_DIR="/tmp/apexec/$(pwgen 6 1)"
   PLAYBOOK_URL=${1}
@@ -78,9 +73,14 @@ function cleanup {
   rm -rf ${WORK_DIR}
 }
 
+((!$#)) && \
+  echo "No arguments supplied!" && \
+  show_help && \
+  exit 1
 
 [[ " $* " =~ " -h " ]] || [[ " $* " =~ " --help " ]] && \
-  show_help
+  show_help && \
+  exit 0
 
 init ${1} ${2} ${3} ${4} ${5}
 pull_playbook
