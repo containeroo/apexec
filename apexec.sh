@@ -60,7 +60,7 @@ function install_requirements {
 }
 
 function execute_ansible_playbook {
-  ansible-playbook ${PLAYBOOK_FILE} --diff --extra-vars=ansible_user=${SSH_USER} ${VAULT_PASSWORD} &> /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log
+  ansible-playbook ${PLAYBOOK_FILE} --diff --extra-vars=ansible_user=${SSH_USER} ${VAULT_PASSWORD_FILE} &> /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log
 }
 
 function send_notification {
@@ -89,7 +89,7 @@ function cleanup {
   show_help && \
   exit 0
 
-init ${1} ${2} ${3} ${4} ${5}
+init ${@}
 pull_playbook
 install_requirements
 execute_ansible_playbook
