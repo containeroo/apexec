@@ -57,6 +57,7 @@ function pull_playbook {
 
 function install_requirements {
   [ -f requirements.yml ] && ansible-galaxy install -r requirements.yml --force
+  [ -f requirements.yml ] && ansible-galaxy collection install -r requirements.yml --force
 }
 
 function execute_ansible_playbook {
