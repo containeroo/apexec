@@ -11,7 +11,7 @@ Usage: apexec.sh PLAYBOOK_URL
                  SSH_USER
                  SLACK_TOKEN
                  SLACK_CHANNEL
-                 VAULT_PASSWORD_FILE
+                 VAULT_PASSWORD_FILE (optional)
                  [-h|--help]
 
 Helper script for https://github.com/adnanh/webhook.
