@@ -110,7 +110,7 @@ trigger-webhook:
 Add the following variables to the repository:
 
 | variable            | description                                       | examle                                   |
-|-:-------------------|-:-------------------------------------------------|------------------------------------------|
+|:--------------------|:--------------------------------------------------|:-----------------------------------------|
 | PLAYBOOK_FILE       | name of playbook file                             | main.yml                                 |
 | SSH_USER            | user for Ansible to connect to hosts              | my-ansible-user                          |
 | SLACK_CHANNEL       | channel in Slack to upload Ansible output         | ansible                                  |
