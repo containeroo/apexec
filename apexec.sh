@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -o errexit
-
 [ ! -x "$(command -v pwgen)" ] && \
   echo "pwgen not found!" && \
   exit 1
@@ -83,12 +81,6 @@ function cleanup {
   rm -rf ${WORK_DIR}
 }
 
-function cmdfail {
-  cleanup
-  echo "failed to run script!"
-  exit 1
-}
-
 ((!$#)) && \
   echo "No arguments supplied!" && \
   show_help && \
@@ -97,8 +89,6 @@ function cmdfail {
 [[ " $* " =~ " -h " ]] || [[ " $* " =~ " --help " ]] && \
   show_help && \
   exit 0
-
-trap cmdfail ERR
 
 init ${@}
 pull_playbook
