@@ -32,15 +32,15 @@ function init {
   VAULT_PASSWORD_FILE=${6}
 
   [ -z "${PLAYBOOK_URL}" ] && \
-    echo "environment variable 'PLAYBOOK_URL' not set!" && \
+    echo "argument 'PLAYBOOK_URL' not set!" && \
     exit 1
 
   [ -z "${PLAYBOOK_FILE}" ] && \
-    echo "environment variable 'PLAYBOOK_FILE' not set!" && \
+    echo "argument 'PLAYBOOK_FILE' not set!" && \
     exit 1
 
   [ -z "${SSH_USER}" ] && \
-    echo "environment variable 'SSH_USER' not set!" && \
+    echo "argument 'SSH_USER' not set!" && \
     exit 1
 
   [ -n "${VAULT_PASSWORD_FILE}" ] && \
@@ -57,24 +57,24 @@ function pull_playbook {
 
 function install_requirements {
   [ -f requirements.yml ] && ansible-galaxy install -r requirements.yml --force
-  [ -f requirements.yml ] && ansible-galaxy collection install -r requirements.yml --force
 }
 
 function execute_ansible_playbook {
   ansible-playbook ${PLAYBOOK_FILE} --diff --extra-vars=ansible_user=${SSH_USER} ${VAULT_PASSWORD_FILE} &> /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log
+  cat /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log
 }
 
 function send_notification {
   [ -z "${SLACK_TOKEN}" ] && \
-    echo "environment variable 'SLACK_TOKEN' not set" && \
+    echo "argument 'SLACK_TOKEN' not set" && \
     return
   [ -z "${SLACK_CHANNEL}" ] && \
-    echo "environment variable 'SLACK_TOKEN' not set" && \
+    echo "argument 'SLACK_TOKEN' not set" && \
     return
 
   summary=$(sed -n '/PLAY RECAP .*/ { :a; n; p; ba; }' /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log | sed -r '/^\s*$/d')
   echo -e "PLAY RECAP:\n${summary}\n$(cat /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log)" > /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log
-  curl -F file=@/tmp/${PLAYBOOK_NAME}-${JOB_ID}.log -F "initial_comment=Ansible Playbook execution: ${PLAYBOOK_NAME}" -F "channels=#${SLACK_CHANNEL}" -H "Authorization: Bearer ${SLACK_TOKEN}" https://slack.com/api/files.upload
+  curl -sS -F file=@/tmp/${PLAYBOOK_NAME}-${JOB_ID}.log -F "initial_comment=Ansible Playbook execution: ${PLAYBOOK_NAME}" -F "channels=#${SLACK_CHANNEL}" -H "Authorization: Bearer ${SLACK_TOKEN}" https://slack.com/api/files.upload
 }
 
 function cleanup {
