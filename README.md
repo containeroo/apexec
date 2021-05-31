@@ -90,6 +90,8 @@ If you are using a vault password file, you must encode the slashes with `%2F`
 
 ### Gitlab pipeline
 
+You can use wget:
+
 ```yaml
 ---
 stages:
@@ -103,6 +105,25 @@ trigger-webhook:
     - payload="git_ssh_url=${ssh_url}&playbook_file=${PLAYBOOK_FILE}&ssh_user=${SSH_USER}&slack_channel=${SLACK_CHANNEL}&vault_password_file=${VAULT_PASSWORD_FILE}"
     - echo "${payload}"
     - 'wget -O - --post-data "${payload}" --header "WEBHOOK-TOKEN: ${WEBHOOK_TOKEN}" ${WEBHOOK_URL}'
+  only:
+    - master
+```
+
+Or curl:
+
+```yaml
+---
+stages:
+  - trigger-webhook
+
+trigger-webhook:
+  stage: trigger-webhook
+  image: busybox:1.33.1
+  script:
+    - ssh_url=$(echo "${CI_REPOSITORY_URL}" | sed -r 's#(http.*://).*:.*@([^/]+)/(.+)$#git@\2:\3#g')
+    - payload="git_ssh_url=${ssh_url}&playbook_file=${PLAYBOOK_FILE}&ssh_user=${SSH_USER}&slack_channel=${SLACK_CHANNEL}&vault_password_file=${VAULT_PASSWORD_FILE}"
+    - echo "${payload}"
+    - 'curl --silent --show-error --request POST --data ${payload} --header "WEBHOOK-TOKEN: ${WEBHOOK_TOKEN}" ${WEBHOOK_URL}'
   only:
     - master
 ```
