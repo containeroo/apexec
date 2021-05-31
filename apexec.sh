@@ -76,7 +76,7 @@ function send_notification {
 
   summary=$(sed -n '/PLAY RECAP .*/ { :a; n; p; ba; }' /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log | sed -r '/^\s*$/d')
   echo -e "PLAY RECAP:\n${summary}\n$(cat /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log)" > /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log
-  curl -F file=@/tmp/${PLAYBOOK_NAME}-${JOB_ID}.log -F "initial_comment=Ansible Playbook execution: ${PLAYBOOK_NAME}" -F "channels=#${SLACK_CHANNEL}" -H "Authorization: Bearer ${SLACK_TOKEN}" https://slack.com/api/files.upload
+  curl -sS -F file=@/tmp/${PLAYBOOK_NAME}-${JOB_ID}.log -F "initial_comment=Ansible Playbook execution: ${PLAYBOOK_NAME}" -F "channels=#${SLACK_CHANNEL}" -H "Authorization: Bearer ${SLACK_TOKEN}" https://slack.com/api/files.upload
 }
 
 function cleanup {
