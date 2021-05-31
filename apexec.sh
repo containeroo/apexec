@@ -63,6 +63,7 @@ function install_requirements {
 
 function execute_ansible_playbook {
   ansible-playbook ${PLAYBOOK_FILE} --diff --extra-vars=ansible_user=${SSH_USER} ${VAULT_PASSWORD_FILE} &> /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log
+  cat /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log
 }
 
 function send_notification {
