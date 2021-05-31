@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o errexit
+
 [ ! -x "$(command -v pwgen)" ] && \
   echo "pwgen not found!" && \
   exit 1
@@ -32,15 +34,15 @@ function init {
   VAULT_PASSWORD_FILE=${6}
 
   [ -z "${PLAYBOOK_URL}" ] && \
-    echo "environment variable 'PLAYBOOK_URL' not set!" && \
+    echo "argument 'PLAYBOOK_URL' not set!" && \
     exit 1
 
   [ -z "${PLAYBOOK_FILE}" ] && \
-    echo "environment variable 'PLAYBOOK_FILE' not set!" && \
+    echo "argument 'PLAYBOOK_FILE' not set!" && \
     exit 1
 
   [ -z "${SSH_USER}" ] && \
-    echo "environment variable 'SSH_USER' not set!" && \
+    echo "argument 'SSH_USER' not set!" && \
     exit 1
 
   [ -n "${VAULT_PASSWORD_FILE}" ] && \
@@ -57,7 +59,6 @@ function pull_playbook {
 
 function install_requirements {
   [ -f requirements.yml ] && ansible-galaxy install -r requirements.yml --force
-  [ -f requirements.yml ] && ansible-galaxy collection install -r requirements.yml --force
 }
 
 function execute_ansible_playbook {
@@ -66,10 +67,10 @@ function execute_ansible_playbook {
 
 function send_notification {
   [ -z "${SLACK_TOKEN}" ] && \
-    echo "environment variable 'SLACK_TOKEN' not set" && \
+    echo "argument 'SLACK_TOKEN' not set" && \
     return
   [ -z "${SLACK_CHANNEL}" ] && \
-    echo "environment variable 'SLACK_TOKEN' not set" && \
+    echo "argument 'SLACK_TOKEN' not set" && \
     return
 
   summary=$(sed -n '/PLAY RECAP .*/ { :a; n; p; ba; }' /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log | sed -r '/^\s*$/d')
@@ -81,6 +82,12 @@ function cleanup {
   rm -rf ${WORK_DIR}
 }
 
+function cmdfail {
+  cleanup
+  echo "failed to run script!"
+  exit 1
+}
+
 ((!$#)) && \
   echo "No arguments supplied!" && \
   show_help && \
@@ -89,6 +96,8 @@ function cleanup {
 [[ " $* " =~ " -h " ]] || [[ " $* " =~ " --help " ]] && \
   show_help && \
   exit 0
+
+trap cmdfail ERR
 
 init ${@}
 pull_playbook
