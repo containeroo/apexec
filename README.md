@@ -79,13 +79,12 @@ If you are using a vault password file, you must encode the slashes with `%2F`
     - source: payload  # path to Ansible vault password file (optional)
       name: vault_password_file
   trigger-rule:
-    - match:
-        type: value
+    match:
+      type: value
       value: <GITLAB_TOKEN>
-        parameter:
-          source: header
-          name: WEBHOOK-TOKEN
-
+      parameter:
+        source: header
+        name: WEBHOOK-TOKEN
 ```
 
 ### Gitlab pipeline
