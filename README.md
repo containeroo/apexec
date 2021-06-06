@@ -12,6 +12,7 @@ Script to use in combination with [webook](https://github.com/adnanh/webhook)
 - git client
 - Slack App (optional)
 - [jq](https://github.com/stedolan/jq) (only if using Slack)
+- curl (minimum version 7.67.0)
 
 ## webhook example
 
