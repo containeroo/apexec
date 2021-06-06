@@ -90,7 +90,7 @@ function send_notification {
 
   [ $(echo $response | jq .ok) == true ] && \
     echo "Slack notification successfully send" || \
-    echo "Error sending Slack notification $(echo $response | jq -r)"
+    echo "Error sending Slack notification. $(echo $response | jq -r)"
 }
 
 function cleanup {
