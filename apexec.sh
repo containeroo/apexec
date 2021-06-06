@@ -77,8 +77,6 @@ function send_notification {
     echo "cannot send Slack notification. File '${LOG_FILE}' not found!" && \
     return
 
-  summary=$(sed -n '/PLAY RECAP .*/ { :a; n; p; ba; }' ${LOG_FILE} | sed -r '/^\s*$/d')
-  echo -e "PLAY RECAP:\n${summary}\n$(cat ${LOG_FILE})" > ${LOG_FILE}
   response=$(curl \
                   --silent \
                   --show-error \
