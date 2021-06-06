@@ -2,7 +2,7 @@
 
 WORK IN PROGRESS
 
-Script to use in combination with [webook](https://github.com/adnanh/webhook)
+Script to use in combination with [webhook](https://github.com/adnanh/webhook)
 
 ## Requirements
 
