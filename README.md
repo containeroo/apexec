@@ -1,8 +1,16 @@
 # apexec
 
-WORK IN PROGRESS
+Script to use in combination with [webhook](https://github.com/adnanh/webhook)
 
-Script to use in combination with [webooks](https://github.com/adnanh/webhook)
+## Requirements
+
+- [webhook](https://github.com/adnanh/webhook)
+- Ansible Playbook
+- GitLab
+- git client
+- Slack App (optional)
+- [jq](https://github.com/stedolan/jq) (only if using Slack)
+- curl (minimum version 7.67.0)
 
 ## webhook example
 
@@ -137,7 +145,6 @@ Add the following variables to the repository:
 | VAULT_PASSWORD_FILE | path to file with password for ansible-vault      | /opt/apexec/ansible-password-file        |
 | WEBHOOK_TOKEN       | user defined token to authenticate agains webhook | mysecretpassword                         |
 | WEBHOOK_URL         | URL to webhook server with webhook-id             | https://webhook.example.com/hooks/apexec |
-
 
 ## Slack App
 
