@@ -80,7 +80,9 @@ function send_notification {
   summary=$(sed -n '/PLAY RECAP .*/ { :a; n; p; ba; }' ${LOG_FILE} | sed -r '/^\s*$/d')
   echo -e "PLAY RECAP:\n${summary}\n$(cat ${LOG_FILE})" > ${LOG_FILE}
   response=$(curl \
-                  -sS \
+                  --silent \
+                  --show-error \
+                  --no-progress-meter \
                   --form file=@${LOG_FILE} \
                   --form "initial_comment=Ansible Playbook execution: ${PLAYBOOK_NAME}" \
                   --form "channels=#${SLACK_CHANNEL}" \
