@@ -48,6 +48,7 @@ function init {
 
   PLAYBOOK_NAME=${PLAYBOOK_URL##*/}
   PLAYBOOK_NAME=${PLAYBOOK_NAME%.git}
+  LOG_FILE="/tmp/${PLAYBOOK_NAME}-${JOB_ID}.log"
 }
 
 function pull_playbook {
@@ -60,8 +61,8 @@ function install_requirements {
 }
 
 function execute_ansible_playbook {
-  ansible-playbook ${PLAYBOOK_FILE} --diff --extra-vars=ansible_user=${SSH_USER} ${VAULT_PASSWORD_FILE} &> /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log
-  cat /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log
+  ansible-playbook ${PLAYBOOK_FILE} --diff --extra-vars=ansible_user=${SSH_USER} ${VAULT_PASSWORD_FILE} &> ${LOG_FILE}
+  cat ${LOG_FILE}
 }
 
 function send_notification {
@@ -72,9 +73,24 @@ function send_notification {
     echo "argument 'SLACK_TOKEN' not set" && \
     return
 
-  summary=$(sed -n '/PLAY RECAP .*/ { :a; n; p; ba; }' /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log | sed -r '/^\s*$/d')
-  echo -e "PLAY RECAP:\n${summary}\n$(cat /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log)" > /tmp/${PLAYBOOK_NAME}-${JOB_ID}.log
-  curl -sS -F file=@/tmp/${PLAYBOOK_NAME}-${JOB_ID}.log -F "initial_comment=Ansible Playbook execution: ${PLAYBOOK_NAME}" -F "channels=#${SLACK_CHANNEL}" -H "Authorization: Bearer ${SLACK_TOKEN}" https://slack.com/api/files.upload
+  [ ! -f ${LOG_FILE} ] && \
+    echo "cannot send Slack notification. File '${LOG_FILE}' not found!" && \
+    return
+
+  summary=$(sed -n '/PLAY RECAP .*/ { :a; n; p; ba; }' ${LOG_FILE} | sed -r '/^\s*$/d')
+  echo -e "PLAY RECAP:\n${summary}\n$(cat ${LOG_FILE})" > ${LOG_FILE}
+  response=$(curl \
+                  --silent \
+                  --show-error \
+                  --form file=@${LOG_FILE} \
+                  --form "initial_comment=Ansible Playbook execution: ${PLAYBOOK_NAME}" \
+                  --form "channels=#${SLACK_CHANNEL}" \
+                  --header "Authorization: Bearer ${SLACK_TOKEN}" \
+                  https://slack.com/api/files.upload)
+
+  [ $(echo $response | jq .ok) == true ] && \
+    echo "Slack notification successfully send" || \
+    echo "Error sending Slack notification $(echo $response | jq -r)"
 }
 
 function cleanup {
