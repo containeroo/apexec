@@ -77,12 +77,14 @@ function send_notification {
     echo "cannot send Slack notification. File '${LOG_FILE}' not found!" && \
     return
 
+  grep --quiet "failed=0" "${LOG_FILE}" || ERROR_MSG=" failed"
+
   response=$(curl \
                   --silent \
                   --show-error \
                   --no-progress-meter \
                   --form file=@"${LOG_FILE}" \
-                  --form "initial_comment=Ansible Playbook execution: ${PLAYBOOK_NAME}" \
+                  --form "initial_comment=Ansible Playbook execution${ERROR_MSG}: ${PLAYBOOK_NAME}" \
                   --form "channels=#${SLACK_CHANNEL}" \
                   --header "Authorization: Bearer ${SLACK_TOKEN}" \
                   https://slack.com/api/files.upload)
