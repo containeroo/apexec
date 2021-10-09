@@ -52,8 +52,8 @@ function init {
 }
 
 function pull_playbook {
-  git clone --recursive ${PLAYBOOK_URL} ${WORK_DIR}
-  cd ${WORK_DIR}
+  git clone --recursive "${PLAYBOOK_URL}" "${WORK_DIR}"
+  cd "${WORK_DIR}" || return
 }
 
 function install_requirements {
@@ -61,8 +61,8 @@ function install_requirements {
 }
 
 function execute_ansible_playbook {
-  ansible-playbook ${PLAYBOOK_FILE} --diff --extra-vars=ansible_user=${SSH_USER} ${VAULT_PASSWORD_FILE} &> ${LOG_FILE}
-  cat ${LOG_FILE}
+  ansible-playbook "${PLAYBOOK_FILE}" --diff --extra-vars=ansible_user="${SSH_USER}" "${VAULT_PASSWORD_FILE}" &> "${LOG_FILE}"
+  cat "${LOG_FILE}"
 }
 
 function send_notification {
@@ -73,7 +73,7 @@ function send_notification {
     echo "argument 'SLACK_TOKEN' not set" && \
     return
 
-  [ ! -f ${LOG_FILE} ] && \
+  [ ! -f "${LOG_FILE}" ] && \
     echo "cannot send Slack notification. File '${LOG_FILE}' not found!" && \
     return
 
@@ -81,19 +81,19 @@ function send_notification {
                   --silent \
                   --show-error \
                   --no-progress-meter \
-                  --form file=@${LOG_FILE} \
+                  --form file=@"${LOG_FILE}" \
                   --form "initial_comment=Ansible Playbook execution: ${PLAYBOOK_NAME}" \
                   --form "channels=#${SLACK_CHANNEL}" \
                   --header "Authorization: Bearer ${SLACK_TOKEN}" \
                   https://slack.com/api/files.upload)
 
-  [ $(echo $response | jq .ok) == true ] && \
+  [ "$(echo "$response" | jq .ok)" == true ] && \
     echo "Slack notification successfully send" || \
-    echo "Error sending Slack notification. $(echo $response | jq -r)"
+    echo "Error sending Slack notification. $(echo "$response" | jq -r)"
 }
 
 function cleanup {
-  rm -rf ${WORK_DIR}
+  rm -rf "${WORK_DIR}"
 }
 
 ((!$#)) && \
@@ -105,7 +105,7 @@ function cleanup {
   show_help && \
   exit 0
 
-init ${@}
+init "${@}"
 pull_playbook
 install_requirements
 execute_ansible_playbook
