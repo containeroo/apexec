@@ -44,7 +44,7 @@ function init {
     exit 1
 
   [ -n "${VAULT_PASSWORD_FILE}" ] && \
-    VAULT_PASSWORD_FILE="--vault-password-file ${VAULT_PASSWORD_FILE}"
+    VAULT_PASSWORD_FILE="--vault-password-file=${VAULT_PASSWORD_FILE}"
 
   PLAYBOOK_NAME=${PLAYBOOK_URL##*/}
   PLAYBOOK_NAME=${PLAYBOOK_NAME%.git}
