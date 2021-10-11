@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.1.0](https://github.com/containeroo/apexec/tree/v1.1.0) (2021-10-11)
+
+Check if playbook execution failed and notify user
+
 ## [v1.0.1](https://github.com/containeroo/apexec/tree/v1.0.1) (2021-06-06)
 
 Remove broken summary feature
