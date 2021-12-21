@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.1.1](https://github.com/containeroo/apexec/tree/v1.1.1) (2021-12-21)
+
+Also notify failed execution if host is unreachable
+
 ## [v1.1.0](https://github.com/containeroo/apexec/tree/v1.1.0) (2021-10-11)
 
 Check if playbook execution failed and notify user

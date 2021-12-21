@@ -78,6 +78,7 @@ function send_notification {
     return
 
   grep --quiet "failed=0" "${LOG_FILE}" || ERROR_MSG=" failed"
+  grep --quiet "unreachable=0" "${LOG_FILE}" || ERROR_MSG=" failed"
 
   response=$(curl \
                   --silent \
