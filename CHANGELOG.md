@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.0.0](https://github.com/containeroo/apexec/tree/v2.0.0) (2022-01-14)
+
+**Breaking change**: The positional arguments `vault_password_file` and `ansible_extra_args` have switched their order!
+
+The `--diff` option is no longer a default, use `ANSIBLE_EXTRA_ARGS` instead
+
 ## [v1.2.0](https://github.com/containeroo/apexec/tree/v1.2.0) (2022-01-14)
 
 Add option to add extra args to the ansible-playbook command

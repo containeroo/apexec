@@ -35,6 +35,8 @@ Create a dedicated Gitlab user for apexec and set it as maintainer for all neces
       name: <SLACK_WEBHOOK_URL>
     - source: query  # SLACK_CHANNEL (without hashtag!)
       name: slack_channel
+    - source: payload
+      name: ansible_extra_args  # extra args to pass to ansible-playbook
     - source: query  # path to Ansible vault password file (optional)
       name: vault_password_file
   trigger-rule:
@@ -58,7 +60,7 @@ Create a dedicated Gitlab user for apexec and set it as maintainer for all neces
 Settings ==> Webhooks ==> add URL
 
 ```text
-https://webhook.example.com/hooks/apexec?playbook_file=main.yml&ssh_user=ansible&slack_channel=ansible&vault_password_file=%2Fopt%2Fapexec%2Fansible-vault-pass
+https://webhook.example.com/hooks/apexec?playbook_file=main.yml&ssh_user=ansible&slack_channel=ansible&ansible_extra_args=--diff&vault_password_file=%2Fopt%2Fapexec%2Fansible-vault-pass
 ```
 
 **ATTENTION:**
@@ -84,6 +86,8 @@ If you are using a vault password file, you must encode the slashes with `%2F`
       name: <SLACK_APP_TOKEN>
     - source: payload  # SLACK_CHANNEL (without hashtag!)
       name: slack_channel
+    - source: payload
+      name: ansible_extra_args  # extra args to pass to ansible-playbook
     - source: payload  # path to Ansible vault password file (optional)
       name: vault_password_file
   trigger-rule:
@@ -109,7 +113,7 @@ trigger-webhook:
   image: busybox:1.33.1
   script:
     - ssh_url=$(echo "${CI_REPOSITORY_URL}" | sed -r 's#(http.*://).*:.*@([^/]+)/(.+)$#git@\2:\3#g')
-    - payload="git_ssh_url=${ssh_url}&playbook_file=${PLAYBOOK_FILE}&ssh_user=${SSH_USER}&slack_channel=${SLACK_CHANNEL}&vault_password_file=${VAULT_PASSWORD_FILE}"
+    - payload="git_ssh_url=${ssh_url}&playbook_file=${PLAYBOOK_FILE}&ssh_user=${SSH_USER}&slack_channel=${SLACK_CHANNEL}&ansible_extra_args=--diff&vault_password_file=${VAULT_PASSWORD_FILE}"
     - echo "${payload}"
     - 'wget -O - --post-data "${payload}" --header "WEBHOOK-TOKEN: ${WEBHOOK_TOKEN}" ${WEBHOOK_URL}'
   only:
@@ -128,7 +132,7 @@ trigger-webhook:
   image: busybox:1.33.1
   script:
     - ssh_url=$(echo "${CI_REPOSITORY_URL}" | sed -r 's#(http.*://).*:.*@([^/]+)/(.+)$#git@\2:\3#g')
-    - payload="git_ssh_url=${ssh_url}&playbook_file=${PLAYBOOK_FILE}&ssh_user=${SSH_USER}&slack_channel=${SLACK_CHANNEL}&vault_password_file=${VAULT_PASSWORD_FILE}"
+    - payload="git_ssh_url=${ssh_url}&playbook_file=${PLAYBOOK_FILE}&ssh_user=${SSH_USER}&slack_channel=${SLACK_CHANNEL}&ansible_extra_args=--diff&vault_password_file=${VAULT_PASSWORD_FILE}"
     - echo "${payload}"
     - 'curl --silent --show-error --request POST --data ${payload} --header "WEBHOOK-TOKEN: ${WEBHOOK_TOKEN}" ${WEBHOOK_URL}'
   only:
@@ -137,7 +141,7 @@ trigger-webhook:
 
 Add the following variables to the repository:
 
-| variable            | description                                       | examle                                     |
+| variable            | description                                       | example                                    |
 | :------------------ | :------------------------------------------------ | :----------------------------------------- |
 | PLAYBOOK_FILE       | name of playbook file                             | main.yml                                   |
 | SSH_USER            | user for Ansible to connect to hosts              | my-ansible-user                            |
@@ -145,7 +149,6 @@ Add the following variables to the repository:
 | VAULT_PASSWORD_FILE | path to file with password for ansible-vault      | /opt/apexec/ansible-password-file          |
 | WEBHOOK_TOKEN       | user defined token to authenticate agains webhook | mysecretpassword                           |
 | WEBHOOK_URL         | URL to webhook server with webhook-id             | <https://webhook.example.com/hooks/apexec> |
-| ANSIBLE_EXTRA_ARGS  | extra arguments for ansible-playbook              | --extra-vars "foo=bar" --check             |
 
 ## Slack App
 

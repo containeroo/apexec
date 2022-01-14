@@ -11,8 +11,8 @@ Usage: apexec.sh PLAYBOOK_URL
                  SSH_USER
                  SLACK_TOKEN
                  SLACK_CHANNEL
+                 ANSIBLE_EXTRA_ARGS
                  VAULT_PASSWORD_FILE (optional)
-                 ANSIBLE_EXTRA_ARGS (optional)
                  [-h|--help]
 
 Ansible playbook execution script for https://github.com/adnanh/webhook.
@@ -29,8 +29,8 @@ function init {
   SSH_USER=${3}
   SLACK_TOKEN=${4}
   SLACK_CHANNEL=${5}
-  VAULT_PASSWORD_FILE=${6}
-  ANSIBLE_EXTRA_ARGS=${7}
+  ANSIBLE_EXTRA_ARGS=${6}
+  VAULT_PASSWORD_FILE=${7}
 
   [ -z "${PLAYBOOK_URL}" ] && \
     echo "argument 'PLAYBOOK_URL' not set!" && \
@@ -62,7 +62,7 @@ function install_requirements {
 }
 
 function execute_ansible_playbook {
-  ansible-playbook "${PLAYBOOK_FILE}" --diff "${ANSIBLE_EXTRA_ARGS}" --extra-vars=ansible_user="${SSH_USER}" "${VAULT_PASSWORD_FILE}" &> "${LOG_FILE}"
+  ansible-playbook "${PLAYBOOK_FILE}" --extra-vars=ansible_user="${SSH_USER}" "${ANSIBLE_EXTRA_ARGS}" "${VAULT_PASSWORD_FILE}" &> "${LOG_FILE}"
   cat "${LOG_FILE}"
 }
 
@@ -91,7 +91,7 @@ function send_notification {
                   --header "Authorization: Bearer ${SLACK_TOKEN}" \
                   https://slack.com/api/files.upload)
 
-  [ $(jq .ok? <<< "$response") == true ] && \
+  [ "$(jq .ok? <<< "$response")" == true ] && \
     echo "Slack notification successfully send" || \
     echo "Error sending Slack notification. $(jq -r <<< "$response")"
 }
