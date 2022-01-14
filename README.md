@@ -61,7 +61,7 @@ Settings ==> Webhooks ==> add URL
 https://webhook.example.com/hooks/apexec?playbook_file=main.yml&ssh_user=ansible&slack_channel=ansible&vault_password_file=%2Fopt%2Fapexec%2Fansible-vault-pass
 ```
 
-**ATTENTION**
+**ATTENTION:**
 
 If you are using a vault password file, you must encode the slashes with `%2F`
 

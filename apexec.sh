@@ -91,9 +91,9 @@ function send_notification {
                   --header "Authorization: Bearer ${SLACK_TOKEN}" \
                   https://slack.com/api/files.upload)
 
-  [ $(jq .ok? <<< "$response" ) == true ] && \
+  [ $(jq .ok? <<< "$response") == true ] && \
     echo "Slack notification successfully send" || \
-   echo "Error sending Slack notification. $(jq -r <<< "$response")"
+    echo "Error sending Slack notification. $(jq -r <<< "$response")"
 }
 
 function cleanup {
