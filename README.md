@@ -61,7 +61,7 @@ Settings ==> Webhooks ==> add URL
 https://webhook.example.com/hooks/apexec?playbook_file=main.yml&ssh_user=ansible&slack_channel=ansible&vault_password_file=%2Fopt%2Fapexec%2Fansible-vault-pass
 ```
 
-**ATTENTION**
+**ATTENTION:**
 
 If you are using a vault password file, you must encode the slashes with `%2F`
 
@@ -137,14 +137,15 @@ trigger-webhook:
 
 Add the following variables to the repository:
 
-| variable            | description                                       | examle                                   |
-|:--------------------|:--------------------------------------------------|:-----------------------------------------|
-| PLAYBOOK_FILE       | name of playbook file                             | main.yml                                 |
-| SSH_USER            | user for Ansible to connect to hosts              | my-ansible-user                          |
-| SLACK_CHANNEL       | channel in Slack to upload Ansible output         | ansible                                  |
-| VAULT_PASSWORD_FILE | path to file with password for ansible-vault      | /opt/apexec/ansible-password-file        |
-| WEBHOOK_TOKEN       | user defined token to authenticate agains webhook | mysecretpassword                         |
-| WEBHOOK_URL         | URL to webhook server with webhook-id             | https://webhook.example.com/hooks/apexec |
+| variable            | description                                       | examle                                     |
+| :------------------ | :------------------------------------------------ | :----------------------------------------- |
+| PLAYBOOK_FILE       | name of playbook file                             | main.yml                                   |
+| SSH_USER            | user for Ansible to connect to hosts              | my-ansible-user                            |
+| SLACK_CHANNEL       | channel in Slack to upload Ansible output         | ansible                                    |
+| VAULT_PASSWORD_FILE | path to file with password for ansible-vault      | /opt/apexec/ansible-password-file          |
+| WEBHOOK_TOKEN       | user defined token to authenticate agains webhook | mysecretpassword                           |
+| WEBHOOK_URL         | URL to webhook server with webhook-id             | <https://webhook.example.com/hooks/apexec> |
+| ANSIBLE_EXTRA_ARGS  | extra arguments for ansible-playbook              | --extra-vars "foo=bar" --check             |
 
 ## Slack App
 
